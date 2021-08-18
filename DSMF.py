@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from ctypes import *
 import requests
 import time
 import sys
@@ -6,6 +7,33 @@ import os
 import re
 
 URL = 'https://discord.com/api/v9/users/@me/settings'
+
+class OPENFILENAMEA(Structure):
+    _fields_ = [
+        ('lStructSize', c_ulong),
+        ('hwndOwner', c_void_p),
+        ('hInstance', c_void_p),
+        ('lpstrFilter', c_char_p),
+        ('lpstrCustomFilter', c_char_p),
+        ('nMaxCustFilter', c_ulong),
+        ('nFilterIndex', c_ulong),
+        ('lpstrFile', c_char_p),
+        ('nMaxFile', c_ulong),
+        ('lpstrFileTitle', c_char_p),
+        ('nMaxFileTitle', c_ulong),
+        ('lpstrInitialDir', c_char_p),
+        ('lpstrTitle', c_char_p),
+        ('Flags', c_ulong),
+        ('nFileOffset', c_ushort),
+        ('nFileExtension', c_ushort),
+        ('lpstrDefExt', c_char_p),
+        ('lCustData', c_ulonglong),
+        ('lpfnHook', c_void_p),
+        ('lpTemplateName', c_char_p),
+        ('pvReserved', c_void_p),
+        ('dwReserved', c_ulong),
+        ('FlagsEx', c_ulong)
+    ]
 
 def change_message(token, message):
     headers = { 'Host' : 'discord.com', 'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36', 'Content-Type' : 'application/json', 'Authorization' : token, 'Accept' : '*/*', 'Origin' : 'https://discord.com', 'Accept-Encoding' : 'gzip, deflate' }
@@ -47,6 +75,23 @@ def find_token():
 
     return tokens
 
+def select_file():
+    OpenFileName = OPENFILENAMEA()
+
+    memset(byref(OpenFileName), 0x00, sizeof(OpenFileName))
+
+    lpstrFile = (c_char * 256)()
+
+    OpenFileName.lStructSize = sizeof(OPENFILENAMEA)
+    OpenFileName.lpstrFilter = c_char_p(b'Every File(*.*)\0*.*\0\0')
+    OpenFileName.lpstrFile = addressof(lpstrFile)
+    OpenFileName.nMaxFile = 256
+
+    comdlg32 = windll.LoadLibrary('Comdlg32.dll')
+    comdlg32.GetOpenFileNameA(byref(OpenFileName))
+
+    return lpstrFile.decode()
+
 tokens = find_token()
 token = None
 
@@ -58,8 +103,7 @@ for t in tokens:
 if len(sys.argv) == 2:
     filename = sys.argv[1]
 else:
-    print("Usage: {} [filename]".format(sys.argv[0].split('\\')[-1]))
-    sys.exit(-1)
+    filename = select_file()
 
 if token == None:
     print('[-] Discord token not found!')
