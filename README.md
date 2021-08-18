@@ -1,6 +1,6 @@
 # Discord-Status-Message-Flow
 [![GitHub downloads](https://img.shields.io/github/downloads/jungjin0003/Discord-Status-Message-Flow/total.svg?logo=github)](https://github.com/jungjin0003/Discord-Status-Message-Flow/releases)
-![GitHub version](https://img.shields.io/github/v/release/jungjin0003/Discord-Status-Message-Flow)
+[![GitHub version](https://img.shields.io/github/v/release/jungjin0003/Discord-Status-Message-Flow)](https://img.shields.io/github/v/release/jungjin0003/Discord-Status-Message-Flow)
 
 # Info
 It includes the ability to automatically import a discode token, which can cause virus detection on some computers. <br>
