@@ -70,11 +70,11 @@ if len(sys.argv) == 2:
     filename = sys.argv[1]
 else:
     print("Usage: {} [filename]".format(sys.argv[0].split('\\')[-1]))
-    exit(-1)
+    sys.exit(-1)
 
 if token == None:
     print('[-] Discord token not found!')
-    exit(-1)
+    sys.exit(-1)
 else:
     print("[+] Discord token found!")
 
@@ -85,7 +85,7 @@ if os.path.isfile(filename):
     f.close()
 else:
     print("[-] File not found!")
-    exit(-1)
+    sys.exit(-1)
 
 lyrics = lyrics.replace('\n', ' ')
 
