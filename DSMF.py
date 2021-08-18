@@ -90,7 +90,7 @@ def select_file():
     comdlg32 = windll.LoadLibrary('Comdlg32.dll')
     comdlg32.GetOpenFileNameA(byref(OpenFileName))
 
-    return lpstrFile.decode()
+    return lpstrFile.value.decode()
 
 tokens = find_token()
 token = None
