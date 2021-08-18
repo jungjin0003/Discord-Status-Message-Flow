@@ -83,7 +83,7 @@ def select_file():
     lpstrFile = (c_char * 256)()
 
     OpenFileName.lStructSize = sizeof(OPENFILENAMEA)
-    OpenFileName.lpstrFilter = c_char_p(b'Every File(*.*)\0*.*\0\0')
+    OpenFileName.lpstrFilter = c_char_p(b'Message File(*.*)\0*.*\0\0')
     OpenFileName.lpstrFile = addressof(lpstrFile)
     OpenFileName.nMaxFile = 256
 
@@ -102,8 +102,10 @@ for t in tokens:
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
-else:
+elif len(sys.argv) == 1:
     filename = select_file()
+else:
+    sys.exit(-1)
 
 if token == None:
     print('[-] Discord token not found!')
