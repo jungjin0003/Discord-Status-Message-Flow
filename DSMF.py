@@ -6,6 +6,8 @@ import sys
 import os
 import re
 
+user32 = windll.LoadLibrary('user32.dll')
+
 URL = 'https://discord.com/api/v9/users/@me/settings'
 
 class OPENFILENAMEA(Structure):
@@ -109,6 +111,7 @@ else:
 
 if token == None:
     print('[-] Discord token not found!')
+    user32.MessageBoxW(None, "디스코드 토큰을 찾을 수 없습니다", "Discord Status Message Flow", 0x30)
     sys.exit(-1)
 else:
     print("[+] Discord token found!")
@@ -119,7 +122,7 @@ if os.path.isfile(filename):
     lyrics = f.read()
     f.close()
 else:
-    print("[-] File not found!")
+    user32.MessageBoxW(None, "파일을 찾을 수 없습니다", "Discord Status Message Flow", 0x30)
     sys.exit(-1)
 
 lyrics = lyrics.replace('\n', ' ')
@@ -142,7 +145,7 @@ try:
         print(message)
 
         i += 1
-        time.sleep(2)
+        time.sleep(3)
 except:
     pass
 
